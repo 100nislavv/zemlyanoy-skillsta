@@ -76,46 +76,12 @@
       }
     }
 
-    /* ----- Status bar ----- */
-    .status-bar {
-      position: absolute;
-      inset: 0 0 auto 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 154px;
-      padding: 21px 24px 19px;
-      width: 100%;
-      height: 62px;
-      z-index: 5;
-      pointer-events: none;
-      background: linear-gradient(180deg, var(--background-default) 0%, var(--background-default) 65%, rgba(17, 17, 17, 0) 100%);
-    }
-    .status-bar .time {
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
-      font-weight: 600;
-      font-size: 17px;
-      line-height: 22px;
-      color: #fff;
-      flex: 1;
-      text-align: center;
-      padding-top: 1.5px;
-    }
-    .status-bar .levels {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      flex: 1;
-      justify-content: center;
-      padding-top: 1px;
-    }
-    .status-bar .levels svg { display: block; }
 
     /* ----- Main scrollable content ----- */
     .content {
       position: absolute;
       inset: 0;
-      padding: 62px 16px 130px;
+      padding: 24px 16px 130px;
       overflow-y: auto;
       overflow-x: hidden;
       scrollbar-width: none;
@@ -509,30 +475,6 @@
 </head>
 <body>
   <div class="phone" role="application" aria-label="Skills app preview">
-
-    <!-- Status bar -->
-    <div class="status-bar" aria-hidden="true">
-      <div class="time">9:41</div>
-      <div class="levels">
-        <!-- Cellular -->
-        <svg width="19" height="13" viewBox="0 0 19 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="0" y="9" width="3" height="4" rx="0.5" fill="white"/>
-          <rect x="5" y="6" width="3" height="7" rx="0.5" fill="white"/>
-          <rect x="10" y="3" width="3" height="10" rx="0.5" fill="white"/>
-          <rect x="15" y="0" width="3" height="13" rx="0.5" fill="white"/>
-        </svg>
-        <!-- Wifi -->
-        <svg width="17" height="13" viewBox="0 0 17 13" fill="white" xmlns="http://www.w3.org/2000/svg">
-          <path d="M8.5 0C5.6 0 2.95 1.05 0.9 2.8c-.25.2-.27.58-.05.81l1.27 1.3c.2.21.52.22.74.04C4.34 3.66 6.32 2.9 8.5 2.9c2.18 0 4.16.76 5.64 2.05.22.18.54.17.74-.04l1.27-1.3c.22-.23.2-.61-.05-.81C14.05 1.05 11.4 0 8.5 0zm0 4.4c-1.85 0-3.55.66-4.85 1.77-.27.23-.28.63-.04.87l1.28 1.31c.21.21.55.22.78.03C6.6 7.61 7.5 7.3 8.5 7.3c1 0 1.9.31 2.83.78.23.19.57.18.78-.03l1.28-1.31c.24-.24.23-.64-.04-.87C12.05 5.06 10.35 4.4 8.5 4.4zm0 4.4c-.95 0-1.83.32-2.5.84-.3.23-.32.66-.06.94l2.04 2.18c.28.31.76.31 1.04 0l2.04-2.18c.26-.28.24-.71-.06-.94-.67-.52-1.55-.84-2.5-.84z"/>
-        </svg>
-        <!-- Battery -->
-        <svg width="28" height="13" viewBox="0 0 28 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="0.5" y="0.5" width="24" height="12" rx="3.5" stroke="white" stroke-opacity="0.4" fill="none"/>
-          <rect x="2" y="2" width="21" height="9" rx="2" fill="white"/>
-          <path d="M26 4.5V8.5C26.5 8.5 27 8 27 7.5V5.5C27 5 26.5 4.5 26 4.5Z" fill="white" fill-opacity="0.4"/>
-        </svg>
-      </div>
-    </div>
 
     <main class="content">
 
