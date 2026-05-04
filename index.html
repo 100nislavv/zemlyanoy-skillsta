@@ -160,6 +160,20 @@
       gap: 12px;
       width: 100%;
     }
+    #completed-list[hidden],
+    .empty-card[hidden] {
+      display: none;
+    }
+    .empty-card {
+      width: 100%;
+      padding: 16px;
+      background: var(--background-subtitle);
+      border-radius: 16px;
+      color: var(--text-secondary);
+      font-size: 16px;
+      line-height: 21px;
+      text-align: center;
+    }
     .section-text {
       display: flex;
       flex-direction: column;
@@ -325,12 +339,15 @@
       </section>
 
       <!-- Completed this week -->
-      <section class="challenges-section last" id="completed-section" aria-label="Completed this week" hidden>
+      <section class="challenges-section last" aria-label="Completed this week">
         <div class="section-text">
           <h2 class="section-title">Completed this week</h2>
           <p class="section-subtitle">Something you can be proud of</p>
         </div>
         <div id="completed-list"></div>
+        <div id="completed-empty" class="empty-card" hidden>
+          Nothing this week yet. One small step can make a difference
+        </div>
       </section>
     </main>
 
@@ -345,8 +362,8 @@
     const progressLabel    = document.getElementById('progress-label');
     const leagueBadge      = document.getElementById('league-badge');
     const leagueImg        = document.getElementById('league-img');
-    const completedSection = document.getElementById('completed-section');
     const completedList    = document.getElementById('completed-list');
+    const completedEmpty   = document.getElementById('completed-empty');
 
     const MAX_LEAGUE = 5;
     const LESSONS_PER_LEAGUE = 5;
@@ -390,7 +407,9 @@
         btn.appendChild(text);
         completedList.appendChild(btn);
       }
-      completedSection.hidden = state.completedThisWeek.length === 0;
+      const isEmpty = state.completedThisWeek.length === 0;
+      completedList.hidden = isEmpty;
+      completedEmpty.hidden = !isEmpty;
     }
 
     function paintAll() {
