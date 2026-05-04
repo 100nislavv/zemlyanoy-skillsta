@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#111111" />
-  <title>Skills — Daily challenges</title>
+  <title>Skills — Challenges</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
@@ -14,22 +14,12 @@
       --background-subtitle: #252525;
       --text-primary: #efeff1;
       --text-secondary: rgba(239, 239, 241, 0.6);
-      --text-card-primary: #feffff;
-      --text-card-secondary: #626262;
-      --text-dark: rgba(0, 0, 0, 0.9);
-      --button-black-bg: #111111;
-      --button-black-text: #fff8f3;
       --button-white-bg: #efeff1;
-      --progress-bg: rgba(0, 0, 0, 0.05);
-      --progress-active: #111111;
-      --star: #ffc100;
+      --button-white-text: #111111;
       --accent-cyan: #3cd3fe;
       --vibrant-tertiary: #121212;
       --label-vibrant: #f5f5f5;
-      --card-green: #70ac90;
-      --card-purple: #a699c1;
-      --card-pink: #f6cce4;
-      --card-orange: #e46947;
+      --hero-green: #136458;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -76,7 +66,6 @@
       }
     }
 
-
     /* ----- Main scrollable content ----- */
     .content {
       position: absolute;
@@ -90,85 +79,96 @@
     .content::-webkit-scrollbar { display: none; }
     .content > * + * { margin-top: 24px; }
 
-    /* ----- Header (Streak + weekly progress) ----- */
-    .header-card {
+    /* ----- Leagues progress ----- */
+    .leagues-card {
       display: flex;
-      gap: 1px;
+      align-items: center;
+      gap: 16px;
       width: 358px;
+      padding: 16px;
+      background: var(--background-subtitle);
       border-radius: 16px;
       overflow: hidden;
     }
-    .header-streak {
-      width: 96px;
-      background: var(--background-subtitle);
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-    }
-    .header-progress {
+    .leagues-body {
       flex: 1;
-      background: var(--background-subtitle);
-      padding: 10px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-    .header-progress .title {
-      grid-column: 1 / -1;
-      text-align: center;
-      font-size: 12px;
-      line-height: 12px;
-      color: var(--text-card-primary);
-    }
-    .stat-block {
+      min-width: 0;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: 3px;
-    }
-    .stat-number {
-      display: flex;
-      align-items: center;
+      gap: 4px;
       justify-content: center;
-      gap: 2px;
+      height: 33px;
     }
-    .stat-number .num {
-      font-weight: 700;
-      font-size: 18px;
-      line-height: 20px;
-      color: var(--text-card-primary);
+    .leagues-body p {
+      font-size: 14px;
+      line-height: 21px;
+      color: var(--text-primary);
+      white-space: nowrap;
     }
-    .stat-label {
-      font-size: 12px;
-      line-height: 12px;
-      color: var(--text-card-secondary);
+    .progress-bar {
+      height: 6px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
     }
-    .streak-label {
-      font-size: 12px;
-      line-height: 12px;
-      color: var(--text-card-primary);
+    .progress-bar .fill {
+      position: absolute;
+      left: 0;
+      bottom: -0.5px;
+      height: 6px;
+      width: 80%;
+      background: #ffffff;
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .fire-icon {
-      width: 20px;
-      height: 20px;
-      display: inline-block;
+    .progress-bar .fill.no-anim {
+      transition: none;
+    }
+    .league-badge {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      transform-origin: center;
+    }
+    .league-badge img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+    }
+    .league-badge.is-leveling-up {
+      animation: leagueLevelUp 1000ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes leagueLevelUp {
+      0%   { transform: scale(1)   rotate(0deg); }
+      50%  { transform: scale(1.7) rotate(180deg); }
+      100% { transform: scale(1)   rotate(360deg); }
     }
 
-    /* ----- Section ----- */
-    .section {
+    /* ----- Sections ----- */
+    .challenges-section {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
       gap: 12px;
       width: 358px;
+    }
+    .challenges-section[hidden] {
+      display: none;
+    }
+    .challenges-section.last {
+      padding-bottom: 24px;
+    }
+    #completed-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
     }
     .section-text {
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
       gap: 6px;
       width: 100%;
     }
@@ -178,300 +178,123 @@
       line-height: 1.35;
       color: var(--text-primary);
     }
-    .section-subtitle-row {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      width: 100%;
-    }
     .section-subtitle {
       font-size: 14px;
       line-height: 21px;
       color: var(--text-secondary);
     }
 
-    /* Stacked avatar group */
-    .avatar-stack {
+    /* ----- Hero (daily) challenge card ----- */
+    .hero-card {
       display: flex;
-      align-items: center;
-      padding-right: 7px;
-    }
-    .avatar-stack .avatar {
-      width: 20px;
-      height: 20px;
-      border-radius: 12px;
-      margin-right: -7px;
-      background-size: cover;
-      background-position: center;
-      border: 1.5px solid var(--background-default);
-    }
-    .avatar-1 { background: linear-gradient(135deg, #f6c674, #e08a4a); }
-    .avatar-2 { background: linear-gradient(135deg, #6bb88f, #2e7050); }
-    .avatar-3 { background: linear-gradient(135deg, #d77b5e, #8a3c25); }
-
-    /* ----- Daily challenge tasks ----- */
-    .task-item {
-      display: flex;
+      flex-direction: column;
       align-items: center;
       gap: 16px;
-      padding: 16px;
-      width: 100%;
-      background: var(--background-subtitle);
-      border: none;
-      border-radius: 16px;
-      cursor: pointer;
-      transition: background 0.15s ease, transform 0.15s ease;
-      font-family: inherit;
-      color: inherit;
-    }
-    .task-item:hover {
-      background: #2d2d2d;
-    }
-    .task-item:active {
-      transform: scale(0.99);
-    }
-    .task-text {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      min-width: 0;
-      text-align: left;
-    }
-    .task-title {
-      font-weight: 700;
-      font-size: 16px;
-      line-height: 21px;
-      color: #efeff1;
-    }
-    .task-subtitle {
-      font-size: 12px;
-      line-height: 12px;
-      color: var(--text-secondary);
-    }
-    .task-checkbox {
-      width: 24px;
-      height: 24px;
-      border: 1.5px solid var(--button-white-bg);
-      border-radius: 999px;
-      flex-shrink: 0;
-      transition: background 0.15s ease, border-color 0.15s ease;
-      position: relative;
-    }
-    .task-item.done .task-checkbox {
-      background: var(--button-white-bg);
-    }
-    .task-item.done .task-checkbox::after {
-      content: '';
-      position: absolute;
-      left: 6px;
-      top: 3px;
-      width: 6px;
-      height: 11px;
-      border: solid #111;
-      border-width: 0 2px 2px 0;
-      transform: rotate(45deg);
-    }
-    .task-item.done .task-title,
-    .task-item.done .task-subtitle {
-      text-decoration: line-through;
-      opacity: 0.5;
-    }
-
-    /* ----- Skill cards ----- */
-    .card {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
       width: 358px;
-      height: 440px;
-      padding: 6px 0;
+      padding: 16px 16px 20px;
+      background: var(--hero-green);
       border-radius: 16px;
       overflow: hidden;
+      transition: background 0.3s ease;
     }
-    .card.green { background: var(--card-green); }
-    .card.purple { background: var(--card-purple); }
-    .card.pink { background: var(--card-pink); }
-    .card.orange { background: var(--card-orange); }
-
-    .card-illustration {
+    .hero-mascot {
       position: relative;
-      width: 240px;
-      height: 186px;
+      width: 120px;
+      height: 128px;
       overflow: hidden;
+      border-radius: 8px;
+      background: #38393b;
+      flex-shrink: 0;
+      transition: width 0.3s ease, height 0.3s ease;
     }
-    .card-illustration .v {
-      position: absolute;
-      display: block;
-    }
-    .card-illustration .v img {
+    .hero-mascot img {
       display: block;
       width: 100%;
       height: 100%;
     }
-    .card-illustration.opacity-90 { opacity: 0.9; }
-
-    .card-title {
+    .hero-title {
       font-weight: 700;
       font-size: 28px;
-      line-height: 38px;
-      color: var(--text-dark);
-      white-space: nowrap;
-    }
-
-    .rate {
-      display: flex;
-      align-items: center;
-      gap: 3px;
-      height: 35px;
-      padding: 5px 7px 5px 5px;
-      background: #fff;
-      border-radius: 12px;
-    }
-    .rate .star {
-      width: 26px;
-      height: 26px;
-      display: grid;
-      place-items: center;
-    }
-    .rate .star svg { width: 22px; height: 22px; }
-    .rate .num {
-      font-size: 12px;
-      line-height: 12px;
-      color: var(--text-dark);
-    }
-
-    .card-block {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      padding: 3px 0 7px;
-    }
-    .progress {
-      width: 325px;
-      height: 6px;
-      background: var(--progress-bg);
-      border-radius: 999px;
-      overflow: hidden;
-      position: relative;
-    }
-    .progress .fill {
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      height: 6px;
-      background: var(--progress-active);
-    }
-    .next-lesson {
-      font-size: 16px;
-      line-height: 21px;
-      color: var(--text-dark);
+      line-height: 36px;
+      color: var(--text-primary);
       text-align: center;
+      margin: 0;
       width: 100%;
     }
-
-    .btn-black {
+    .hero-button {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       height: 60px;
       padding: 14px 18px;
-      background: var(--button-black-bg);
-      color: var(--button-black-text);
+      background: var(--button-white-bg);
+      color: var(--button-white-text);
       font-weight: 600;
       font-size: 16px;
       line-height: 16px;
       border-radius: 1000px;
       border: none;
       cursor: pointer;
-      transition: transform 0.15s ease, background 0.15s ease;
       font-family: inherit;
+      transition: opacity 0.3s ease;
     }
-    .btn-black:hover { background: #1f1f1f; }
-    .btn-black:active { transform: scale(0.97); }
 
-    /* ----- Tab bar (liquid glass) ----- */
-    .tab-bar {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      padding: 16px 25px 25px;
-      z-index: 10;
+    /* Completed state */
+    .hero-card.is-completed {
+      background: var(--background-subtitle);
     }
-    .tab-bar-buttons {
-      position: relative;
-      display: flex;
-      flex: 1;
-      justify-content: center;
-      padding: 4px 14px 4px 6px;
-      border-radius: 1000px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)),
-        rgba(0, 0, 0, 0.45);
-      backdrop-filter: blur(24px) saturate(180%);
-      -webkit-backdrop-filter: blur(24px) saturate(180%);
-      box-shadow:
-        inset 0 0 0 1px rgba(255, 255, 255, 0.08),
-        0 8px 40px rgba(0, 0, 0, 0.3);
+    .hero-card.is-completed .hero-mascot {
+      width: 60px;
+      height: 64px;
     }
-    .tab-btn {
-      flex: 1;
+    .hero-card.is-completed .hero-title {
+      text-decoration: line-through;
+      text-decoration-thickness: 2px;
+      text-decoration-skip-ink: none;
+    }
+    .hero-card.is-completed .hero-button {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    /* ----- Completed-this-week cards ----- */
+    .completed-card {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      gap: 1px;
-      padding: 6px 8px 7px;
-      background: transparent;
+      gap: 12px;
+      width: 358px;
+      padding: 16px;
+      background: var(--background-subtitle);
+      border-radius: 16px;
       border: none;
       cursor: pointer;
-      color: var(--label-vibrant);
       font-family: inherit;
-      position: relative;
-      border-radius: 100px;
-      text-decoration: none;
-      transition: color 0.15s ease;
+      color: var(--text-primary);
+      text-align: left;
+      overflow: hidden;
     }
-    .tab-btn .icon {
-      width: 28px;
-      height: 28px;
-      display: grid;
-      place-items: center;
+    .completed-icon {
+      width: 30px;
+      height: 32px;
+      flex-shrink: 0;
+      display: block;
+      border-radius: 4px;
+      background: #38393b;
     }
-    .tab-btn .icon svg {
-      width: 26px;
-      height: 26px;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 1.6;
-      stroke-linecap: round;
-      stroke-linejoin: round;
+    .completed-icon img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border-radius: 4px;
     }
-    .tab-btn .label {
-      font-weight: 600;
-      font-size: 10px;
-      line-height: 12px;
-      letter-spacing: -0.1px;
-    }
-    .tab-btn.active {
-      color: var(--accent-cyan);
-    }
-    .tab-btn.active::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: rgba(18, 18, 18, 0.65);
-      border-radius: 100px;
-      mix-blend-mode: plus-lighter;
-      z-index: -1;
+    .completed-text {
+      flex: 1;
+      min-width: 0;
+      font-size: 16px;
+      line-height: 21px;
+      color: var(--text-primary);
     }
 
-    /* helper to position SVG vectors absolutely with inset percentages */
   </style>
 </head>
 <body>
@@ -479,281 +302,202 @@
 
     <main class="content">
 
-      <!-- Header card: streak + weekly progress -->
-      <div class="header-card">
-        <div class="header-streak">
-          <div class="streak-label">Streak</div>
-          <div class="stat-block">
-            <div class="stat-number">
-              <span class="fire-icon" aria-hidden="true">
-                <img src="assets/svg/6e4c3ec6-165c-451b-9166-bdbc0508816a.svg" alt="" style="width:100%;height:100%;display:block;" />
-              </span>
-              <span class="num">2</span>
-            </div>
-            <div class="stat-label">day</div>
+      <!-- Leagues progress -->
+      <div class="leagues-card" aria-label="League progress">
+        <div class="leagues-body">
+          <p id="progress-label">4/5 lessons to next league</p>
+          <div class="progress-bar" aria-label="Lessons until next league">
+            <div class="fill" id="progress-fill"></div>
           </div>
         </div>
-        <div class="header-progress">
-          <div class="title">Your weekly progress</div>
-          <div class="stat-block">
-            <div class="stat-number"><span class="num">25</span></div>
-            <div class="stat-label">minutes</div>
-          </div>
-          <div class="stat-block">
-            <div class="stat-number"><span class="num">18</span></div>
-            <div class="stat-label">takeaways</div>
-          </div>
+        <div class="league-badge" id="league-badge" aria-hidden="true">
+          <img id="league-img" src="assets/challenges/leagues/league-1.png" alt="" />
         </div>
       </div>
 
       <!-- Daily challenge -->
-      <section class="section" aria-label="Daily challenge">
+      <section class="challenges-section" aria-label="Daily challenge">
         <div class="section-text">
           <h2 class="section-title">Daily challenge</h2>
-          <div class="section-subtitle-row">
-            <span class="section-subtitle">Based on the last completed lessons</span>
-            <div class="avatar-stack" aria-hidden="true">
-              <div class="avatar avatar-1"></div>
-              <div class="avatar avatar-2"></div>
-              <div class="avatar avatar-3"></div>
-            </div>
-          </div>
+          <p class="section-subtitle">Based on the last completed lessons</p>
         </div>
-
-        <button class="task-item" type="button" aria-pressed="false">
-          <div class="task-text">
-            <div class="task-title">Say no without sounding rude</div>
-            <div class="task-subtitle">Communicate your needs effectively</div>
+        <article class="hero-card" id="hero-card">
+          <div class="hero-mascot" aria-hidden="true">
+            <img id="hero-mascot-img" src="" alt="" />
           </div>
-          <div class="task-checkbox" aria-hidden="true"></div>
-        </button>
-
-        <button class="task-item" type="button" aria-pressed="false">
-          <div class="task-text">
-            <div class="task-title">Add alarm</div>
-            <div class="task-subtitle">Know your strengths</div>
-          </div>
-          <div class="task-checkbox" aria-hidden="true"></div>
-        </button>
-
-        <button class="task-item" type="button" aria-pressed="false">
-          <div class="task-text">
-            <div class="task-title">Add blockers for social media</div>
-            <div class="task-subtitle">Make hyperfocus work for you</div>
-          </div>
-          <div class="task-checkbox" aria-hidden="true"></div>
-        </button>
-      </section>
-
-      <!-- Keep learning - active skill (green: Skills for ADHD) -->
-      <section class="section" aria-label="Keep learning - current skill">
-        <div class="section-text">
-          <h2 class="section-title">Keep learning</h2>
-          <p class="section-subtitle">Focus on your current skill</p>
-        </div>
-
-        <article class="card green">
-          <div class="card-illustration" aria-hidden="true">
-            <div class="v" style="inset: 2.73% 28.05% 61.52% 30.45%;"><img src="assets/svg/44026ae9-3b27-454f-b582-c05a65a029de.svg" alt="" /></div>
-            <div class="v" style="inset: 8.06% 33.43% 68.74% 34.92%;"><img src="assets/svg/7354bfe6-fde0-4f1f-a1c7-fb41e7ab72cb.svg" alt="" /></div>
-            <div class="v" style="inset: 27.89% 45.86% 61.52% 47.85%;"><img src="assets/svg/70a094bc-1f5f-486f-9712-cc8305c51572.svg" alt="" /></div>
-            <div class="v" style="inset: 65.09% 34.72% 2.86% 36.65%;"><img src="assets/svg/1932aa00-8f76-4f93-aefa-3a51d5bd4ef6.svg" alt="" /></div>
-            <div class="v" style="inset: 37.14% 57.99% 13.56% 13.19%;"><img src="assets/svg/b28392da-147c-4c07-8193-0239365d371b.svg" alt="" /></div>
-            <div class="v" style="inset: 37.14% 71.68% 52.26% 18.65%;"><img src="assets/svg/f35f0535-30d4-4f5a-a2d0-297ecde30a7b.svg" alt="" /></div>
-            <div class="v" style="inset: 37.17% 11.3% 13.59% 59.91%;"><img src="assets/svg/27bca9ca-f5ed-4125-a841-70de35cdb9cf.svg" alt="" /></div>
-            <div class="v" style="inset: 37.17% 16.72% 52.26% 73.64%;"><img src="assets/svg/6da85628-89a1-4a33-a670-3893f1c9d8e7.svg" alt="" /></div>
-            <div class="v" style="inset: 38.48% 41.5% 28.46% 43.41%;"><img src="assets/svg/dcf75bb4-e75e-4b83-ae2b-13f4bb89d94b.svg" alt="" /></div>
-            <div class="v" style="inset: 45.41% 44.44% 51.58% 53.23%;"><img src="assets/svg/556a3df3-615f-4c2d-93d9-8d696cb64b18.svg" alt="" /></div>
-            <div class="v" style="inset: 45.43% 50.86% 51.59% 46.83%;"><img src="assets/svg/935ee535-cfd1-4c1b-a4b3-6f1765ed320c.svg" alt="" /></div>
-            <div class="v" style="inset: 49.8% 47.33% 48.9% 49.87%;"><img src="assets/svg/c4640c69-f1c8-4c3d-aed5-52b9b60e0a14.svg" alt="" /></div>
-            <div class="v" style="inset: 28.08% 19.36% 56.94% 67.45%;"><img src="assets/svg/858eb8fe-cebc-487e-8a18-c9687a901c04.svg" alt="" /></div>
-            <div class="v" style="inset: 28.06% 65.53% 56.92% 21.32%;"><img src="assets/svg/c99fe99d-6b4d-4668-b6e0-a4b55928057d.svg" alt="" /></div>
-          </div>
-          <h3 class="card-title">Skills for ADHD</h3>
-          <div class="rate">
-            <div class="star" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="#ffc100"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.8-6.3 3.8 1.7-7L2 9.2l7.1-.6L12 2z"/></svg>
-            </div>
-            <span class="num">4.7</span>
-          </div>
-          <div class="card-block">
-            <div class="progress" aria-label="Progress">
-              <div class="fill" style="width: 26px;"></div>
-            </div>
-            <p class="next-lesson">Next lesson: Communicate your needs effectively</p>
-          </div>
-          <button class="btn-black" type="button">Continue journey</button>
+          <h3 class="hero-title" id="hero-title"></h3>
+          <button class="hero-button" type="button" id="hero-toggle">Completed</button>
         </article>
       </section>
 
-      <!-- Keep learning - more skills -->
-      <section class="section" aria-label="Keep learning - more skills">
+      <!-- Completed this week -->
+      <section class="challenges-section last" id="completed-section" aria-label="Completed this week" hidden>
         <div class="section-text">
-          <h2 class="section-title">Keep learning</h2>
-          <p class="section-subtitle">Focus on your current skill</p>
+          <h2 class="section-title">Completed this week</h2>
+          <p class="section-subtitle">Something you can be proud of</p>
         </div>
-
-        <!-- Empathy (purple) -->
-        <article class="card purple">
-          <div class="card-illustration" aria-hidden="true">
-            <div class="v" style="inset: 6.78% 16.1% 6.84% 16.11%;"><img src="assets/svg/dfbafde8-2c2d-4b9d-8c74-fb22ff8f67d6.svg" alt="" /></div>
-            <div class="v" style="inset: 6.78% 35.46% 40.04% 33.36%;"><img src="assets/svg/deb554ac-8ade-4dd7-b3b5-a5d795ca8fea.svg" alt="" /></div>
-            <div class="v" style="inset: 6.78% 36.47% 76.8% 38.68%;"><img src="assets/svg/0011fb75-a120-4af5-9422-32964be4bb0e.svg" alt="" /></div>
-            <div class="v" style="inset: 12.85% 56.07% 82.67% 41.37%;"><img src="assets/svg/b4c32305-1a9b-4987-8229-22f3f88497c2.svg" alt="" /></div>
-            <div class="v" style="inset: 17.37% 54.57% 79.31% 42.05%;"><img src="assets/svg/024ed332-fcbe-4a51-bca7-a01b96f58073.svg" alt="" /></div>
-            <div class="v" style="inset: 15.3% 51.95% 80.23% 45.53%;"><img src="assets/svg/d2a94a2d-8b12-4aa3-95c5-2e40b7c3a54e.svg" alt="" /></div>
-            <div class="v" style="inset: 11.95% 52.61% 84.74% 43.96%;"><img src="assets/svg/84eb39bf-bc24-472d-8f53-a2558b3f875b.svg" alt="" /></div>
-            <div class="v" style="inset: 24.72% 37.7% 62.95% 45.87%;"><img src="assets/svg/2c143d97-f6d7-46c2-844f-46cf6af2e8bd.svg" alt="" /></div>
-            <div class="v" style="inset: 26.11% 39.24% 71.25% 56.58%;"><img src="assets/svg/d9d99e60-98ba-46e4-ad26-6a0ac270a391.svg" alt="" /></div>
-            <div class="v" style="inset: 26.44% 40.33% 72.23% 58.65%;"><img src="assets/svg/42389474-be7d-4f5b-bfc4-4ad1f68fcbac.svg" alt="" /></div>
-            <div class="v" style="inset: 26.1% 46.4% 71.23% 49.4%;"><img src="assets/svg/a483412b-ffba-4882-b818-eabb994999af.svg" alt="" /></div>
-            <div class="v" style="inset: 26.45% 48.52% 72.24% 50.47%;"><img src="assets/svg/7b673b25-a29c-444a-8c78-d8cfafd68061.svg" alt="" /></div>
-            <div class="v" style="inset: 34.37% 51.32% 49.35% 42.82%;"><img src="assets/svg/9125654f-c475-4cf3-ba67-466d63ff9fbb.svg" alt="" /></div>
-            <div class="v" style="inset: 40.07% 41.88% 56.64% 54%;"><img src="assets/svg/80143ec1-7fc8-410e-aff2-8e69bc06b978.svg" alt="" /></div>
-            <div class="v" style="inset: 30.11% 60.81% 66.74% 35.93%;"><img src="assets/svg/07afda91-5fdb-4d1a-83e8-65583b83ba99.svg" alt="" /></div>
-            <div class="v" style="inset: 66.31% 30.2% 14.68% 36.07%;"><img src="assets/svg/66194360-d04e-467c-9a69-ab7f3e0f29e5.svg" alt="" /></div>
-            <div class="v" style="inset: 70.2% 40.31% 17.22% 46.25%;"><img src="assets/svg/a87ff941-fc66-41fc-9d52-68a25ef80842.svg" alt="" /></div>
-            <div class="v" style="inset: 81.44% 44.89% 15.56% 50.78%;"><img src="assets/svg/5fddb035-4a4b-476b-a8fc-659731e98a93.svg" alt="" /></div>
-            <div class="v" style="inset: 70.41% 45.9% 26.85% 51.77%;"><img src="assets/svg/a1b8adaa-b42f-4913-836a-aa5368caa188.svg" alt="" /></div>
-          </div>
-          <h3 class="card-title">Empathy</h3>
-          <div class="rate">
-            <div class="star" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="#ffc100"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.8-6.3 3.8 1.7-7L2 9.2l7.1-.6L12 2z"/></svg>
-            </div>
-            <span class="num">4.9</span>
-          </div>
-          <div class="card-block">
-            <div class="progress"><div class="fill" style="width: 26px;"></div></div>
-            <p class="next-lesson">Next lesson: Switch gut vs logic</p>
-          </div>
-          <button class="btn-black" type="button">Continue journey</button>
-        </article>
-
-        <!-- Public speaking (pink) -->
-        <article class="card pink">
-          <div class="card-illustration" aria-hidden="true">
-            <div class="v" style="inset: 0 3.63% 0 9.47%;"><img src="assets/svg/38563225-e91d-45ec-a838-d51f08d08439.svg" alt="" /></div>
-            <div class="v" style="inset: 65.58% 66.1% 0 3.36%;"><img src="assets/svg/7e509b3e-f6f6-4724-8fb9-485d4bf63f96.svg" alt="" /></div>
-            <div class="v" style="inset: 79.81% 77.27% 0 3.33%;"><img src="assets/svg/1b28f54e-1ed5-466f-b705-caea24f96787.svg" alt="" /></div>
-            <div class="v" style="inset: 74.33% 73.27% 13.65% 4.7%;"><img src="assets/svg/f879566e-0914-4c7d-913c-fbca2fd34279.svg" alt="" /></div>
-            <div class="v" style="inset: 71.14% 80.28% 22.56% 6.37%;"><img src="assets/svg/9714a9ff-5a3f-40ef-88e4-428d63611160.svg" alt="" /></div>
-            <div class="v" style="inset: 68.42% 79.58% 24.36% 9.47%;"><img src="assets/svg/0540ce36-355e-432e-a529-b9919a0f330b.svg" alt="" /></div>
-            <div class="v" style="inset: 78.23% 89.58% 19.1% 3.98%;"><img src="assets/svg/4be4d43b-393c-406f-84ef-effb4904974a.svg" alt="" /></div>
-            <div class="v" style="inset: 79.67% 90.69% 19.1% 4.61%;"><img src="assets/svg/4191d528-2117-44a9-9f18-7dd746e9e3a5.svg" alt="" /></div>
-            <div class="v" style="inset: 59.21% 16.12% 0 21.93%;"><img src="assets/svg/f566c04c-49b2-4d1c-84c5-45ba04a9aa71.svg" alt="" /></div>
-            <div class="v" style="inset: 69.72% 16.12% 13.11% 63.84%;"><img src="assets/svg/1c362147-9b42-46c1-9423-35e5bd9c0588.svg" alt="" /></div>
-            <div class="v" style="inset: 82.62% 44.29% 0 43.98%;"><img src="assets/svg/93117dd4-b950-4352-b16a-c7af68d0cefe.svg" alt="" /></div>
-            <div class="v" style="inset: 65.14% 22.07% 28.94% 74.31%;"><img src="assets/svg/22e4891c-0303-4dd2-8600-17eebc7725cb.svg" alt="" /></div>
-            <div class="v" style="inset: 64.81% 26.33% 31.34% 70.8%;"><img src="assets/svg/b7d1d6fe-5f17-43c2-be6c-c5b7d3fdc55a.svg" alt="" /></div>
-            <div class="v" style="inset: 63.08% 53.65% 18.57% 43.98%;"><img src="assets/svg/8d721533-fc2a-47b7-a31d-48e740e722bf.svg" alt="" /></div>
-            <div class="v" style="inset: 63.07% 50.57% 18.55% 47.34%;"><img src="assets/svg/cb3cb6bd-bd8e-4382-88d1-112c6849efaa.svg" alt="" /></div>
-            <div class="v" style="inset: 63.07% 44.27% 18.56% 53.54%;"><img src="assets/svg/18f86578-adbf-4e37-b6e6-a38c6182da2e.svg" alt="" /></div>
-            <div class="v" style="inset: 63.07% 47.52% 18.56% 50.47%;"><img src="assets/svg/a93fa6c5-c6f1-4ce0-8319-f1582de0e37c.svg" alt="" /></div>
-            <div class="v" style="inset: 72.03% 21.19% 24.01% 76.59%;"><img src="assets/svg/607a13bd-24fc-42cf-bae8-372b32f7b33d.svg" alt="" /></div>
-            <div class="v" style="inset: 69.84% 24.21% 28.57% 72.46%;"><img src="assets/svg/7e681a20-eb70-4b1f-a6bf-4a11e9b9ce06.svg" alt="" /></div>
-            <div class="v" style="inset: 73.65% 24.77% 23.82% 72.95%;"><img src="assets/svg/ce2f58ad-406e-4af1-b854-c4b3889f0ffe.svg" alt="" /></div>
-            <div class="v" style="inset: 52.82% 29.77% 28.6% 65.47%;"><img src="assets/svg/16f0790c-5c6f-4168-a12e-24c0c6636484.svg" alt="" /></div>
-            <div class="v" style="inset: 65.09% 17.57% 25.06% 77.98%;"><img src="assets/svg/9ba3d07e-5a60-4890-95b5-5ff6accfdc3d.svg" alt="" /></div>
-            <div class="v" style="inset: 69.83% 15.08% 24.1% 81.16%;"><img src="assets/svg/c260709f-a927-4984-b9f6-7a22d5ae43bb.svg" alt="" /></div>
-            <div class="v" style="inset: 69.83% 15.83% 24.1% 81.16%;"><img src="assets/svg/bbe70949-b2bf-424d-8245-f0cba3cf2d34.svg" alt="" /></div>
-            <div class="v" style="inset: 2.24% 35.06% 44.41% 35.23%;"><img src="assets/svg/a05f47f3-6ff0-4c52-a9cf-3573bc0ba071.svg" alt="" /></div>
-            <div class="v" style="inset: 2.24% 37.44% 70.05% 36.57%;"><img src="assets/svg/958fdd73-9b0d-4ba0-8fb8-90067a26ffd5.svg" alt="" /></div>
-            <div class="v" style="inset: 41.99% 44.49% 49.9% 46.5%;"><img src="assets/svg/32a8da10-5f4d-4b1e-a9c8-a47149b585cd.svg" alt="" /></div>
-            <div class="v" style="inset: 43.91% 46.01% 51.84% 47.99%;"><img src="assets/svg/ffbcace5-efe5-48c2-b91f-15602fdff05f.svg" alt="" /></div>
-            <div class="v" style="inset: 24.4% 47.84% 58.34% 48.03%;"><img src="assets/svg/f20f1db6-7d4d-415b-a103-262238ec40f0.svg" alt="" /></div>
-            <div class="v" style="inset: 32.27% 51.39% 64.22% 40.64%;"><img src="assets/svg/1b399a90-b171-415b-8dc1-9fa82e85d0e0.svg" alt="" /></div>
-            <div class="v" style="inset: 32.26% 40.87% 64.23% 51.12%;"><img src="assets/svg/1cdcdfb4-3ba0-473c-b141-acb381b524b3.svg" alt="" /></div>
-            <div class="v" style="inset: 27.62% 42.19% 69.62% 52.24%;"><img src="assets/svg/79deafb3-8455-426b-95aa-98b790be7d03.svg" alt="" /></div>
-            <div class="v" style="inset: 27.34% 52.86% 69.7% 42.12%;"><img src="assets/svg/7ddfa813-7017-4c58-b86c-5e9b5d06be34.svg" alt="" /></div>
-          </div>
-          <h3 class="card-title">Public speaking</h3>
-          <div class="rate">
-            <div class="star" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="#ffc100"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.8-6.3 3.8 1.7-7L2 9.2l7.1-.6L12 2z"/></svg>
-            </div>
-            <span class="num">4.6</span>
-          </div>
-          <div class="card-block">
-            <div class="progress"><div class="fill" style="width: 26px;"></div></div>
-            <p class="next-lesson">Next lesson: Communicate your needs effectively</p>
-          </div>
-          <button class="btn-black" type="button">Continue journey</button>
-        </article>
-
-        <!-- Communications (orange) -->
-        <article class="card orange">
-          <div class="card-illustration opacity-90" aria-hidden="true">
-            <div class="v" style="inset: 23.85% 12.86% 16.24% 13.1%;"><img src="assets/svg/211766b7-a195-4c3f-b5b0-7825d08cda17.svg" alt="" /></div>
-            <div class="v" style="inset: 23.85% 30.19% 56.45% 54.42%;"><img src="assets/svg/220c4ea0-6a01-40c9-8d31-f05d704df968.svg" alt="" /></div>
-            <div class="v" style="inset: 24.62% 30.19% 57.22% 60.48%;"><img src="assets/svg/fa09447b-a6ee-46d3-9185-33204ad82af5.svg" alt="" /></div>
-            <div class="v" style="inset: 24.21% 54.35% 56.03% 30.3%;"><img src="assets/svg/aa3dfaad-fc26-4cdd-af91-18d681b6286b.svg" alt="" /></div>
-            <div class="v" style="inset: 25.05% 54.35% 56.86% 36.35%;"><img src="assets/svg/50510ec6-c1f9-408b-b591-50e4a4ea124c.svg" alt="" /></div>
-            <div class="v" style="inset: 51.98% 20.95% 30.8% 21.1%;"><img src="assets/svg/db11f7b8-4996-417b-9ebe-e6fa5234f60b.svg" alt="" /></div>
-            <div class="v" style="inset: 6.25% 38% 81.52% 52.17%;"><img src="assets/svg/a382dd3f-2270-49bc-a056-3b9d3fac33c6.svg" alt="" /></div>
-            <div class="v" style="inset: 17.95% 46.94% 74.88% 46.85%;"><img src="assets/svg/e19df380-3fed-437b-9885-27b534e6aea0.svg" alt="" /></div>
-          </div>
-          <h3 class="card-title">Communications</h3>
-          <div class="rate">
-            <div class="star" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="#ffc100"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.8-6.3 3.8 1.7-7L2 9.2l7.1-.6L12 2z"/></svg>
-            </div>
-            <span class="num">4.6</span>
-          </div>
-          <div class="card-block">
-            <div class="progress"><div class="fill" style="width: 26px;"></div></div>
-            <p class="next-lesson">Next lesson: First impression tricks</p>
-          </div>
-          <button class="btn-black" type="button">Continue journey</button>
-        </article>
-
+        <div id="completed-list"></div>
       </section>
     </main>
-
-    <!-- Tab Bar (liquid glass) -->
-    <nav class="tab-bar" aria-label="Main navigation">
-      <div class="tab-bar-buttons">
-        <a class="tab-btn active" href="index.html" aria-current="page">
-          <span class="icon">
-            <svg viewBox="0 0 26 26"><circle cx="13" cy="13" r="10"/><path d="M3 13h20M13 3a15 10 0 010 20M13 3a15 10 0 000 20"/></svg>
-          </span>
-          <span class="label">Explore</span>
-        </a>
-        <a class="tab-btn" href="#">
-          <span class="icon">
-            <svg viewBox="0 0 26 26"><circle cx="6" cy="20" r="3"/><circle cx="20" cy="6" r="3"/><path d="M8 18 L18 8"/></svg>
-          </span>
-          <span class="label">Journey</span>
-        </a>
-        <a class="tab-btn" href="challenges.html">
-          <span class="icon">
-            <svg viewBox="0 0 26 26"><circle cx="13" cy="13" r="10"/><circle cx="13" cy="13" r="6"/><circle cx="13" cy="13" r="2.5" fill="currentColor"/></svg>
-          </span>
-          <span class="label">Challenges</span>
-        </a>
-        <a class="tab-btn" href="#">
-          <span class="icon">
-            <svg viewBox="0 0 26 26">
-              <path d="M13 3 L15 6 L18.5 5.5 L19.5 9 L23 11 L21.5 14 L23 17 L19.5 19 L18.5 22.5 L15 22 L13 25 L11 22 L7.5 22.5 L6.5 19 L3 17 L4.5 14 L3 11 L6.5 9 L7.5 5.5 L11 6 Z"/>
-              <circle cx="13" cy="14" r="3.5"/>
-            </svg>
-          </span>
-          <span class="label">Settings</span>
-        </a>
-      </div>
-    </nav>
 
   </div>
 
   <script>
-    // Toggle task completion
-    document.querySelectorAll('.task-item').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const done = btn.classList.toggle('done');
-        btn.setAttribute('aria-pressed', done ? 'true' : 'false');
-      });
+    const heroCard         = document.getElementById('hero-card');
+    const heroToggle       = document.getElementById('hero-toggle');
+    const heroTitle        = document.getElementById('hero-title');
+    const heroMascotImg    = document.getElementById('hero-mascot-img');
+    const progressFill     = document.getElementById('progress-fill');
+    const progressLabel    = document.getElementById('progress-label');
+    const leagueBadge      = document.getElementById('league-badge');
+    const leagueImg        = document.getElementById('league-img');
+    const completedSection = document.getElementById('completed-section');
+    const completedList    = document.getElementById('completed-list');
+
+    const MAX_LEAGUE = 5;
+    const LESSONS_PER_LEAGUE = 5;
+    let state = null;
+    let animating = false;
+
+    function clampLeague(l) { return Math.min(Math.max(l, 1), MAX_LEAGUE); }
+
+    function paintLeague() {
+      leagueImg.src = `assets/challenges/leagues/league-${clampLeague(state.league)}.png`;
+    }
+
+    function paintProgress() {
+      const pct = (state.progress / LESSONS_PER_LEAGUE) * 100;
+      progressFill.style.width = pct + '%';
+      progressLabel.textContent = `${state.progress}/${LESSONS_PER_LEAGUE} lessons to next league`;
+    }
+
+    function paintHero() {
+      heroTitle.textContent = state.todayChallenge.title;
+      heroMascotImg.src = `assets/challenges/lessons/${state.todayChallenge.mascot}`;
+      heroCard.classList.toggle('is-completed', state.completedToday);
+    }
+
+    function paintCompletedList() {
+      completedList.innerHTML = '';
+      for (const item of state.completedThisWeek) {
+        const btn = document.createElement('button');
+        btn.className = 'completed-card';
+        btn.type = 'button';
+        const icon = document.createElement('span');
+        icon.className = 'completed-icon';
+        const img = document.createElement('img');
+        img.alt = '';
+        img.src = `assets/challenges/lessons/${item.mascot}`;
+        icon.appendChild(img);
+        const text = document.createElement('span');
+        text.className = 'completed-text';
+        text.textContent = item.title;
+        btn.appendChild(icon);
+        btn.appendChild(text);
+        completedList.appendChild(btn);
+      }
+      completedSection.hidden = state.completedThisWeek.length === 0;
+    }
+
+    function paintAll() {
+      paintHero();
+      paintCompletedList();
+      paintProgress();
+      paintLeague();
+    }
+
+    async function fetchState() {
+      const r = await fetch('/api/state', { cache: 'no-store' });
+      return r.json();
+    }
+    async function postToggle(complete) {
+      const r = await fetch(complete ? '/api/complete' : '/api/uncomplete', { method: 'POST' });
+      return r.json();
+    }
+
+    function levelUp(newState) {
+      animating = true;
+      // Bar fills to 100% first, then league badge spins.
+      setTimeout(() => {
+        leagueBadge.classList.add('is-leveling-up');
+        setTimeout(() => {
+          state.league = newState.league;
+          paintLeague();
+        }, 500);
+        setTimeout(() => {
+          leagueBadge.classList.remove('is-leveling-up');
+          state = newState;
+          progressFill.classList.add('no-anim');
+          paintProgress();
+          paintCompletedList();
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => progressFill.classList.remove('no-anim'));
+          });
+          animating = false;
+        }, 1000);
+      }, 450);
+    }
+
+    function levelDown(newState) {
+      animating = true;
+      leagueBadge.style.animationDirection = 'reverse';
+      leagueBadge.classList.add('is-leveling-up');
+      setTimeout(() => {
+        state.league = newState.league;
+        paintLeague();
+        state.progress = newState.progress;
+        progressFill.classList.add('no-anim');
+        paintProgress();
+        paintCompletedList();
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => progressFill.classList.remove('no-anim'));
+        });
+      }, 500);
+      setTimeout(() => {
+        leagueBadge.classList.remove('is-leveling-up');
+        leagueBadge.style.animationDirection = '';
+        state = newState;
+        animating = false;
+      }, 1000);
+    }
+
+    heroToggle.addEventListener('click', async () => {
+      if (animating) return;
+      const wasCompleted = state.completedToday;
+      const oldLeague = state.league;
+      let newState;
+      try {
+        newState = await postToggle(!wasCompleted);
+      } catch (e) {
+        console.error('toggle failed', e);
+        return;
+      }
+
+      if (!wasCompleted && newState.league > oldLeague) {
+        // Level up: keep bar at 5/5 briefly, animate badge, then snap to new league.
+        state.completedToday = true;
+        state.progress = LESSONS_PER_LEAGUE;
+        heroCard.classList.add('is-completed');
+        paintProgress();
+        levelUp(newState);
+      } else if (wasCompleted && newState.league < oldLeague) {
+        state.completedToday = false;
+        heroCard.classList.remove('is-completed');
+        levelDown(newState);
+      } else {
+        state = newState;
+        paintAll();
+      }
     });
 
+    (async () => {
+      try {
+        state = await fetchState();
+        paintAll();
+      } catch (e) {
+        console.error('initial fetch failed', e);
+      }
+    })();
   </script>
 </body>
 </html>
