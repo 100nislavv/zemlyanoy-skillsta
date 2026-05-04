@@ -197,13 +197,39 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 16px;
+      gap: 8px;
       width: 358px;
+    }
+    .hero-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
       padding: 16px 16px 20px;
       background: var(--hero-green);
       border-radius: 16px;
       overflow: hidden;
       transition: background 0.3s ease;
+    }
+    .hero-card.is-completed .hero-inner {
+      background: var(--background-subtitle);
+    }
+    .hero-timer {
+      display: none;
+      width: 100%;
+      padding: 8px 16px;
+      font-size: 16px;
+      line-height: 21px;
+      color: var(--text-primary);
+      text-align: center;
+      margin: 0;
+    }
+    .hero-card.is-completed .hero-timer {
+      display: block;
+    }
+    .hero-timer-label {
+      color: var(--text-secondary);
     }
     .hero-mascot {
       position: relative;
@@ -248,9 +274,6 @@
     }
 
     /* Completed state */
-    .hero-card.is-completed {
-      background: var(--background-subtitle);
-    }
     .hero-card.is-completed .hero-mascot {
       width: 60px;
       height: 64px;
@@ -330,11 +353,17 @@
           <p class="section-subtitle">Based on the last completed lessons</p>
         </div>
         <article class="hero-card" id="hero-card">
-          <div class="hero-mascot" aria-hidden="true">
-            <img id="hero-mascot-img" src="" alt="" />
+          <div class="hero-inner">
+            <div class="hero-mascot" aria-hidden="true">
+              <img id="hero-mascot-img" src="" alt="" />
+            </div>
+            <h3 class="hero-title" id="hero-title"></h3>
+            <button class="hero-button" type="button" id="hero-toggle">Completed</button>
           </div>
-          <h3 class="hero-title" id="hero-title"></h3>
-          <button class="hero-button" type="button" id="hero-toggle">Completed</button>
+          <p class="hero-timer" id="hero-timer" aria-live="polite">
+            <span class="hero-timer-label">Next challenge in</span>
+            <span class="hero-timer-value" id="hero-timer-value">00:00:00</span>
+          </p>
         </article>
       </section>
 
@@ -364,11 +393,13 @@
     const leagueImg        = document.getElementById('league-img');
     const completedList    = document.getElementById('completed-list');
     const completedEmpty   = document.getElementById('completed-empty');
+    const heroTimerValue   = document.getElementById('hero-timer-value');
 
     const MAX_LEAGUE = 5;
     const LESSONS_PER_LEAGUE = 5;
     let state = null;
     let animating = false;
+    let timerInterval = null;
 
     function clampLeague(l) { return Math.min(Math.max(l, 1), MAX_LEAGUE); }
 
@@ -386,6 +417,62 @@
       heroTitle.textContent = state.todayChallenge.title;
       heroMascotImg.src = `assets/challenges/lessons/${state.todayChallenge.mascot}`;
       heroCard.classList.toggle('is-completed', state.completedToday);
+      if (state.completedToday) startTimer(); else stopTimer();
+    }
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    function nycHmsNow() {
+      const fmt = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/New_York',
+        hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false,
+      });
+      let h = 0, m = 0, s = 0;
+      for (const p of fmt.formatToParts(new Date())) {
+        if (p.type === 'hour') h = parseInt(p.value, 10);
+        else if (p.type === 'minute') m = parseInt(p.value, 10);
+        else if (p.type === 'second') s = parseInt(p.value, 10);
+      }
+      if (h === 24) h = 0; // some locales report midnight as 24
+      return { h, m, s };
+    }
+
+    function paintTimer() {
+      const { h, m, s } = nycHmsNow();
+      const remaining = 86400 - (h * 3600 + m * 60 + s);
+      if (remaining <= 0) {
+        heroTimerValue.textContent = '00:00:00';
+        stopTimer();
+        refreshState();
+        return;
+      }
+      const hh = Math.floor(remaining / 3600);
+      const mm = Math.floor((remaining % 3600) / 60);
+      const ss = remaining % 60;
+      heroTimerValue.textContent = `${pad(hh)}:${pad(mm)}:${pad(ss)}`;
+    }
+
+    function startTimer() {
+      if (timerInterval) return;
+      paintTimer();
+      timerInterval = setInterval(paintTimer, 1000);
+    }
+
+    function stopTimer() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+    }
+
+    async function refreshState() {
+      try {
+        const fresh = await fetchState();
+        state = fresh;
+        paintAll();
+      } catch (e) {
+        console.error('refresh failed', e);
+      }
     }
 
     function paintCompletedList() {
@@ -491,11 +578,13 @@
         state.completedToday = true;
         state.progress = LESSONS_PER_LEAGUE;
         heroCard.classList.add('is-completed');
+        startTimer();
         paintProgress();
         levelUp(newState);
       } else if (wasCompleted && newState.league < oldLeague) {
         state.completedToday = false;
         heroCard.classList.remove('is-completed');
+        stopTimer();
         levelDown(newState);
       } else {
         state = newState;
