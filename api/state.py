@@ -1,6 +1,11 @@
-from http.server import BaseHTTPRequestHandler
+import os
+import sys
 
-from _lib import handle_state
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+from http.server import BaseHTTPRequestHandler  # noqa: E402
+
+from _lib import handle_state  # noqa: E402
 
 
 class handler(BaseHTTPRequestHandler):
