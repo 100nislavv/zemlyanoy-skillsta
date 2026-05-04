@@ -155,6 +155,10 @@ def get_completions(sid: str) -> dict:
     return data.get("sessions", {}).get(sid, {})
 
 
+class StorageNotConfigured(RuntimeError):
+    pass
+
+
 def set_completion(sid: str, date_str: str, completed: bool) -> None:
     comps = get_completions(sid)
     if completed:
@@ -164,6 +168,12 @@ def set_completion(sid: str, date_str: str, completed: bool) -> None:
     if _has_kv():
         _kv_request("SET", _kv_key(sid), json.dumps(comps))
         return
+    if os.environ.get("VERCEL"):
+        # File fallback can't work on Vercel's read-only filesystem.
+        raise StorageNotConfigured(
+            "KV is not configured. Connect Upstash KV under Storage in the "
+            "Vercel dashboard and redeploy."
+        )
     data = _load_local()
     sessions = data.setdefault("sessions", {})
     if comps:
@@ -240,6 +250,10 @@ def handle_state(handler) -> None:
 
 def handle_toggle(handler, completed: bool) -> None:
     sid, is_new = get_or_create_sid(handler)
-    set_completion(sid, nyc_today().isoformat(), completed)
+    try:
+        set_completion(sid, nyc_today().isoformat(), completed)
+    except StorageNotConfigured as e:
+        respond_json(handler, {"error": str(e)}, sid=sid, set_sid=is_new, status=503)
+        return
     state = compute_state(sid)
     respond_json(handler, state, sid=sid, set_sid=is_new)
