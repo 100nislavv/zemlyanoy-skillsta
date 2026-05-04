@@ -4,3 +4,14 @@ signup.html
 assets.zip
 assets/_reference.png
 assets/card-*.png
+
+# Python
+__pycache__/
+*.pyc
+
+# Local-only data (production uses KV)
+data.json
+data.json.tmp
+
+# Vercel
+.vercel/
