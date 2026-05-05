@@ -678,20 +678,23 @@
     }
 
     function shouldShowSheet() {
-      return !localStorage.getItem('notif-sheet-seen')
-        && 'Notification' in window
-        && Notification.permission === 'default';
+      if (localStorage.getItem('notif-sheet-seen')) return false;
+      if ('Notification' in window && Notification.permission !== 'default') return false;
+      return true;
     }
 
     sheetOverlay.addEventListener('click', (e) => {
-      if (e.target === sheetOverlay) hideSheet();
+      if (e.target === sheetOverlay) {
+        hideSheet();
+        localStorage.setItem('notif-sheet-seen', '1');
+      }
     });
 
     sheetNotifyBtn.addEventListener('click', async () => {
       hideSheet();
       localStorage.setItem('notif-sheet-seen', '1');
       if ('Notification' in window) {
-        await Notification.requestPermission();
+        try { await Notification.requestPermission(); } catch (e) {}
       }
     });
 
