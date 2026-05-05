@@ -194,7 +194,7 @@ def compute_state(sid: str) -> dict:
     start = week_start(today)
     week = []
     d = start
-    while d < today:
+    while d <= today:
         ds = d.isoformat()
         if completions.get(ds):
             ch = challenge_for_date(d)
