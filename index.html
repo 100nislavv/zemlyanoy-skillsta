@@ -332,6 +332,80 @@
       color: var(--text-primary);
     }
 
+    /* ----- Notification bottom sheet ----- */
+    .sheet-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      display: flex;
+      align-items: flex-end;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .sheet-overlay.is-visible {
+      opacity: 1;
+      visibility: visible;
+    }
+    .sheet {
+      width: 100%;
+      background: #222;
+      border-radius: 20px 20px 0 0;
+      padding: 24px 16px 44px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .sheet-overlay.is-visible .sheet {
+      transform: translateY(0);
+    }
+    .sheet-mascot {
+      width: 204px;
+      height: 88px;
+    }
+    .sheet-mascot img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .sheet-title {
+      font-weight: 700;
+      font-size: 32px;
+      line-height: 40px;
+      color: var(--text-primary);
+      text-align: center;
+      margin: 0;
+    }
+    .sheet-subtitle {
+      font-size: 14px;
+      line-height: 18px;
+      color: var(--text-primary);
+      text-align: center;
+      margin: 0;
+    }
+    .sheet-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 64px;
+      padding: 14px 18px;
+      background: var(--button-white-bg);
+      color: var(--button-white-text);
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 16px;
+      border-radius: 1000px;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
   </style>
 </head>
 <body>
@@ -372,6 +446,18 @@
           </p>
         </article>
       </section>
+
+      <!-- Notification bottom sheet -->
+      <div class="sheet-overlay" id="sheet-overlay">
+        <div class="sheet" id="sheet">
+          <div class="sheet-mascot" aria-hidden="true">
+            <img src="assets/challenges/notification-mascot.png" alt="" />
+          </div>
+          <h2 class="sheet-title">Don&rsquo;t miss tomorrow&rsquo;s challenge</h2>
+          <p class="sheet-subtitle">One quick action a day, picked just for you. Small reps that turn skills into habits.</p>
+          <button class="sheet-button" type="button" id="sheet-notify-btn">Turn on notifications</button>
+        </div>
+      </div>
 
       <!-- Completed this week -->
       <section class="challenges-section last" aria-label="Completed this week">
@@ -567,6 +653,36 @@
       }, 1000);
     }
 
+    const sheetOverlay    = document.getElementById('sheet-overlay');
+    const sheet           = document.getElementById('sheet');
+    const sheetNotifyBtn  = document.getElementById('sheet-notify-btn');
+
+    function showSheet() {
+      sheetOverlay.classList.add('is-visible');
+    }
+
+    function hideSheet() {
+      sheetOverlay.classList.remove('is-visible');
+    }
+
+    function shouldShowSheet() {
+      return !localStorage.getItem('notif-sheet-seen')
+        && 'Notification' in window
+        && Notification.permission === 'default';
+    }
+
+    sheetOverlay.addEventListener('click', (e) => {
+      if (e.target === sheetOverlay) hideSheet();
+    });
+
+    sheetNotifyBtn.addEventListener('click', async () => {
+      hideSheet();
+      localStorage.setItem('notif-sheet-seen', '1');
+      if ('Notification' in window) {
+        await Notification.requestPermission();
+      }
+    });
+
     heroToggle.addEventListener('click', async () => {
       if (animating) return;
       const wasCompleted = state.completedToday;
@@ -579,8 +695,11 @@
         return;
       }
 
+      if (!wasCompleted && shouldShowSheet()) {
+        setTimeout(showSheet, 2000);
+      }
+
       if (!wasCompleted && newState.league > oldLeague) {
-        // Level up: keep bar at 5/5 briefly, animate badge, then snap to new league.
         state.completedToday = true;
         state.progress = LESSONS_PER_LEAGUE;
         heroCard.classList.add('is-completed');
