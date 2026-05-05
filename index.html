@@ -39,6 +39,7 @@
       padding: 0 0;
       background: #111111;
       min-height: 100vh;
+      min-height: 100dvh;
     }
 
     .phone {
@@ -50,7 +51,12 @@
     }
 
     @media (max-width: 500px) {
-      body { padding: 0; min-height: 100vh; background: var(--background-default); }
+      body {
+        padding: 0;
+        min-height: 100vh;
+        min-height: 100dvh;
+        background: var(--background-default);
+      }
       .phone {
         width: 100%;
         height: 100vh;
@@ -333,13 +339,16 @@
     }
 
     /* ----- Notification bottom sheet ----- */
+    body.sheet-open { overflow: hidden; }
+    body.sheet-open .content { overflow: hidden; }
     .sheet-overlay {
-      position: absolute;
+      position: fixed;
       inset: 0;
       background: rgba(0, 0, 0, 0.5);
       z-index: 100;
       display: flex;
       align-items: flex-end;
+      justify-content: center;
       opacity: 0;
       visibility: hidden;
       transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -350,9 +359,10 @@
     }
     .sheet {
       width: 100%;
+      max-width: 390px;
       background: #222;
       border-radius: 20px 20px 0 0;
-      padding: 24px 16px 44px;
+      padding: 24px 16px calc(44px + env(safe-area-inset-bottom));
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -659,10 +669,12 @@
 
     function showSheet() {
       sheetOverlay.classList.add('is-visible');
+      document.body.classList.add('sheet-open');
     }
 
     function hideSheet() {
       sheetOverlay.classList.remove('is-visible');
+      document.body.classList.remove('sheet-open');
     }
 
     function shouldShowSheet() {
