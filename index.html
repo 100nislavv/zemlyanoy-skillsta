@@ -690,11 +690,24 @@
       }
     });
 
-    sheetNotifyBtn.addEventListener('click', async () => {
-      hideSheet();
+    sheetNotifyBtn.addEventListener('click', () => {
       localStorage.setItem('notif-sheet-seen', '1');
-      if ('Notification' in window) {
-        try { await Notification.requestPermission(); } catch (e) {}
+      const supported = 'Notification' in window && typeof Notification.requestPermission === 'function';
+      if (!supported) {
+        hideSheet();
+        return;
+      }
+      let ret;
+      try {
+        ret = Notification.requestPermission();
+      } catch (e) {
+        hideSheet();
+        return;
+      }
+      if (ret && typeof ret.then === 'function') {
+        ret.then(() => hideSheet(), () => hideSheet());
+      } else {
+        hideSheet();
       }
     });
 
